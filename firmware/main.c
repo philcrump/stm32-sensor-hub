@@ -20,19 +20,6 @@ static const lwipthread_opts_t lwip_opts = {
   .link_down_cb = ip_link_down_cb
 };
 
-static THD_WORKING_AREA(waThread1, 128);
-static THD_FUNCTION(Thread1, arg) {
-
-  (void)arg;
-  chRegSetThreadName("blinker");
-  while (true) {
-    palSetLine(LINE_LED3);
-    chThdSleepMilliseconds(100);
-    palClearLine(LINE_LED3);
-    chThdSleepMilliseconds(100);
-  }
-}
-
 int main(void)
 {
   halInit();
@@ -42,10 +29,7 @@ int main(void)
   // Enable PLLSAI
   RCC->CR |= RCC_CR_PLLSAION;
   // Wait for PLLSAI to lock
-  while(!(RCC->CR & RCC_CR_PLLSAIRDY));     // wait for PLLSAI to lock
-
-  /* Test LED Thread */
-  chThdCreateStatic(waThread1, sizeof(waThread1), NORMALPRIO + 1, Thread1, NULL);
+  while(!(RCC->CR & RCC_CR_PLLSAIRDY));
 
   /* Set up watchdog */
   watchdog_init();
