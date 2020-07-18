@@ -134,7 +134,7 @@ done
 for i in `seq 2 $OPTIND`; do shift; done
 
 githash_var=`githash`
-filename="$(hyphenjoin "stm32ntpd" "${githash_var}")"
+filename="$(hyphenjoin "stm32-sensorhub" "${githash_var}")"
 mkdir -p "builds/"
 
 flags="TARGET_FILENAME=\"${filename}\" GITVERSION=\"${githash_var}\" GITVERSION_X32=\"`githash_x32`\""
