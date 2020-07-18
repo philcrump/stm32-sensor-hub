@@ -146,13 +146,10 @@
 #define GPIOC_SDMMC_D1              9U
 #define GPIOC_ZIO_D45               10U
 #define GPIOC_SDMMC_D2              10U
-#define GPIOC_GNSS_TX               10U
 #define GPIOC_ZIO_D46               11U
 #define GPIOC_SDMMC_D3              11U
-#define GPIOC_GNSS_RX               11U
 #define GPIOC_ZIO_D47               12U
 #define GPIOC_SDMMC_CK              12U
-#define GPIOC_GNSS_PPS              12U
 #define GPIOC_BUTTON                13U
 #define GPIOC_OSC32_IN              14U
 #define GPIOC_OSC32_OUT             15U
@@ -409,13 +406,10 @@
 #define LINE_SDMMC_D1               PAL_LINE(GPIOC, 9U)
 #define LINE_ZIO_D45                PAL_LINE(GPIOC, 10U)
 #define LINE_SDMMC_D2               PAL_LINE(GPIOC, 10U)
-#define LINE_GNSS_TX                PAL_LINE(GPIOC, 10U)
 #define LINE_ZIO_D46                PAL_LINE(GPIOC, 11U)
 #define LINE_SDMMC_D3               PAL_LINE(GPIOC, 11U)
-#define LINE_GNSS_RX                PAL_LINE(GPIOC, 11U)
 #define LINE_ZIO_D47                PAL_LINE(GPIOC, 12U)
 #define LINE_SDMMC_CK               PAL_LINE(GPIOC, 12U)
-#define LINE_GNSS_PPS               PAL_LINE(GPIOC, 12U)
 #define LINE_BUTTON                 PAL_LINE(GPIOC, 13U)
 #define LINE_OSC32_IN               PAL_LINE(GPIOC, 14U)
 #define LINE_OSC32_OUT              PAL_LINE(GPIOC, 15U)
@@ -817,9 +811,9 @@
                                      PIN_MODE_INPUT(GPIOC_ZIO_D21) |        \
                                      PIN_MODE_INPUT(GPIOC_ZIO_D43) |        \
                                      PIN_MODE_INPUT(GPIOC_ZIO_D44) |        \
-                                     PIN_MODE_ALTERNATE(GPIOC_GNSS_TX) |    \
-                                     PIN_MODE_ALTERNATE(GPIOC_GNSS_RX) |    \
-                                     PIN_MODE_INPUT(GPIOC_GNSS_PPS) |       \
+                                     PIN_MODE_INPUT(GPIOC_ZIO_D45) |        \
+                                     PIN_MODE_INPUT(GPIOC_ZIO_D46) |        \
+                                     PIN_MODE_INPUT(GPIOC_ZIO_D47) |        \
                                      PIN_MODE_INPUT(GPIOC_BUTTON) |         \
                                      PIN_MODE_INPUT(GPIOC_OSC32_IN) |       \
                                      PIN_MODE_INPUT(GPIOC_OSC32_OUT))
@@ -833,9 +827,9 @@
                                      PIN_OTYPE_PUSHPULL(GPIOC_ZIO_D21) |    \
                                      PIN_OTYPE_PUSHPULL(GPIOC_ZIO_D43) |    \
                                      PIN_OTYPE_PUSHPULL(GPIOC_ZIO_D44) |    \
-                                     PIN_OTYPE_PUSHPULL(GPIOC_GNSS_TX) |    \
-                                     PIN_OTYPE_PUSHPULL(GPIOC_GNSS_RX) |    \
-                                     PIN_OTYPE_PUSHPULL(GPIOC_GNSS_PPS) |   \
+                                     PIN_OTYPE_PUSHPULL(GPIOC_ZIO_D45) |    \
+                                     PIN_OTYPE_PUSHPULL(GPIOC_ZIO_D46) |    \
+                                     PIN_OTYPE_PUSHPULL(GPIOC_ZIO_D47) |    \
                                      PIN_OTYPE_PUSHPULL(GPIOC_BUTTON) |     \
                                      PIN_OTYPE_PUSHPULL(GPIOC_OSC32_IN) |   \
                                      PIN_OTYPE_PUSHPULL(GPIOC_OSC32_OUT))
@@ -849,9 +843,9 @@
                                      PIN_OSPEED_HIGH(GPIOC_ZIO_D21) |       \
                                      PIN_OSPEED_HIGH(GPIOC_ZIO_D43) |       \
                                      PIN_OSPEED_HIGH(GPIOC_ZIO_D44) |       \
-                                     PIN_OSPEED_HIGH(GPIOC_GNSS_TX) |       \
-                                     PIN_OSPEED_HIGH(GPIOC_GNSS_RX) |       \
-                                     PIN_OSPEED_HIGH(GPIOC_GNSS_PPS) |      \
+                                     PIN_OSPEED_HIGH(GPIOC_ZIO_D45) |       \
+                                     PIN_OSPEED_HIGH(GPIOC_ZIO_D46) |       \
+                                     PIN_OSPEED_HIGH(GPIOC_ZIO_D47) |       \
                                      PIN_OSPEED_HIGH(GPIOC_BUTTON) |        \
                                      PIN_OSPEED_VERYLOW(GPIOC_OSC32_IN) |   \
                                      PIN_OSPEED_VERYLOW(GPIOC_OSC32_OUT))
@@ -865,9 +859,9 @@
                                      PIN_PUPDR_PULLUP(GPIOC_ZIO_D21) |      \
                                      PIN_PUPDR_PULLUP(GPIOC_ZIO_D43) |      \
                                      PIN_PUPDR_PULLUP(GPIOC_ZIO_D44) |      \
-                                     PIN_PUPDR_PULLUP(GPIOC_GNSS_TX) |      \
-                                     PIN_PUPDR_FLOATING(GPIOC_GNSS_RX) |    \
-                                     PIN_PUPDR_PULLDOWN(GPIOC_GNSS_PPS) |   \
+                                     PIN_PUPDR_PULLUP(GPIOC_ZIO_D45) |      \
+                                     PIN_PUPDR_PULLUP(GPIOC_ZIO_D46) |      \
+                                     PIN_PUPDR_PULLUP(GPIOC_ZIO_D47) |      \
                                      PIN_PUPDR_FLOATING(GPIOC_BUTTON) |     \
                                      PIN_PUPDR_FLOATING(GPIOC_OSC32_IN) |   \
                                      PIN_PUPDR_FLOATING(GPIOC_OSC32_OUT))
@@ -881,9 +875,9 @@
                                      PIN_ODR_HIGH(GPIOC_ZIO_D21) |          \
                                      PIN_ODR_HIGH(GPIOC_ZIO_D43) |          \
                                      PIN_ODR_HIGH(GPIOC_ZIO_D44) |          \
-                                     PIN_ODR_HIGH(GPIOC_GNSS_TX) |          \
-                                     PIN_ODR_HIGH(GPIOC_GNSS_RX) |          \
-                                     PIN_ODR_HIGH(GPIOC_GNSS_PPS) |         \
+                                     PIN_ODR_HIGH(GPIOC_ZIO_D45) |          \
+                                     PIN_ODR_HIGH(GPIOC_ZIO_D46) |          \
+                                     PIN_ODR_HIGH(GPIOC_ZIO_D47) |          \
                                      PIN_ODR_HIGH(GPIOC_BUTTON) |           \
                                      PIN_ODR_HIGH(GPIOC_OSC32_IN) |         \
                                      PIN_ODR_HIGH(GPIOC_OSC32_OUT))
@@ -897,9 +891,9 @@
                                      PIN_AFIO_AF(GPIOC_ZIO_D21, 0U))
 #define VAL_GPIOC_AFRH              (PIN_AFIO_AF(GPIOC_ZIO_D43, 0U) |       \
                                      PIN_AFIO_AF(GPIOC_ZIO_D44, 0U) |       \
-                                     PIN_AFIO_AF(GPIOC_GNSS_TX, 7U) |       \
-                                     PIN_AFIO_AF(GPIOC_GNSS_RX, 7U) |       \
-                                     PIN_AFIO_AF(GPIOC_GNSS_PPS, 0U) |      \
+                                     PIN_AFIO_AF(GPIOC_ZIO_D45, 0U) |       \
+                                     PIN_AFIO_AF(GPIOC_ZIO_D46, 0U) |       \
+                                     PIN_AFIO_AF(GPIOC_ZIO_D47, 0U) |       \
                                      PIN_AFIO_AF(GPIOC_BUTTON, 0U) |        \
                                      PIN_AFIO_AF(GPIOC_OSC32_IN, 0U) |      \
                                      PIN_AFIO_AF(GPIOC_OSC32_OUT, 0U))
