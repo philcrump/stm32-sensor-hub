@@ -26,8 +26,8 @@ THD_FUNCTION(environmentals_service_thread, arg)
     for(i = 0; i < hub_environmentals.count; i++)
     {
       /* TODO: Environmental Sensor Drivers */
-      hub_environmentals.environmental[i].temperature = 10.0 + (random(300)/10.0);
-      hub_environmentals.environmental[i].humidity = 60.0 + (random(200)/10.0);
+      hub_environmentals.environmental[i].temperature = 10.0 + (app_random(300)/10.0);
+      hub_environmentals.environmental[i].humidity = 60.0 + (app_random(200)/10.0);
     }
 
     chThdSleepMilliseconds(100);

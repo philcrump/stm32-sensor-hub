@@ -23,7 +23,7 @@
 #define ITERATOR_INC()    iterator = iterator < 2 ? iterator + 1 : 0
 
 #include "watchdog.h"
-#include "random.h"
+#include "app_random.h"
 #include "ip_link.h"
 #include "contacts.h"
 #include "environmentals.h"
