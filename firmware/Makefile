@@ -10,7 +10,7 @@ endif
 
 # C specific options here (added to USE_OPT).
 ifeq ($(USE_COPT),)
-  USE_COPT = 
+  USE_COPT = -DWOLFSSL_USER_SETTINGS
 endif
 
 # C++ specific options here (added to USE_OPT).
@@ -91,6 +91,7 @@ MCU  = cortex-m4
 # Imported source files and paths.
 CHIBIOS  := ChibiOS
 LWIP     := lwIP
+WOLFSSL  := wolfSSL
 CONFDIR  := ./cfg
 BUILDDIR := ./builds
 DEPDIR   := $(BUILDDIR)/.dep
@@ -115,6 +116,8 @@ include $(CHIBIOS)/os/hal/lib/streams/streams.mk
 # lwIP
 # include $(CHIBIOS)/os/various/lwip_bindings/lwip.mk
 include $(CONFDIR)/ch_lwip_bindings.mk
+# WolfSSL
+include $(CONFDIR)/wolfssl.mk
 
 # Define linker script file here
 LDSCRIPT= $(STARTUPLD)/STM32F429xI.ld
@@ -125,12 +128,13 @@ CSRC = $(ALLCSRC) \
        $(BOARDSRC) \
        $(CHIBIOS)/os/various/evtimer.c \
        watchdog.c \
-       random.c \
+       app_random.c \
        ip_link.c \
        contacts.c \
        environmentals.c \
        web/web.c \
        web/web_paths.c \
+       web/cert.c \
        main.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global

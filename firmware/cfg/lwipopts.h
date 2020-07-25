@@ -147,7 +147,7 @@
  * a lot of data that needs to be copied, this should be set high.
  */
 #ifndef MEM_SIZE
-#define MEM_SIZE                        1600
+#define MEM_SIZE                        16000
 #endif
 
 /**
@@ -241,7 +241,7 @@
  * this should be set high.
  */
 #ifndef MEMP_NUM_PBUF
-#define MEMP_NUM_PBUF                   16
+#define MEMP_NUM_PBUF                   32
 #endif
 
 /**
@@ -266,7 +266,7 @@
  * (requires the LWIP_TCP option)
  */
 #ifndef MEMP_NUM_TCP_PCB
-#define MEMP_NUM_TCP_PCB                5
+#define MEMP_NUM_TCP_PCB                8
 #endif
 
 /**
@@ -282,7 +282,7 @@
  * (requires the LWIP_TCP option)
  */
 #ifndef MEMP_NUM_TCP_SEG
-#define MEMP_NUM_TCP_SEG                16
+#define MEMP_NUM_TCP_SEG                64
 #endif
 
 /**
@@ -290,7 +290,7 @@
  * reassembly (whole packets, not fragments!)
  */
 #ifndef MEMP_NUM_REASSDATA
-#define MEMP_NUM_REASSDATA              5
+#define MEMP_NUM_REASSDATA              16
 #endif
 
 /**
@@ -569,7 +569,7 @@
  * packets even if the maximum amount of fragments is enqueued for reassembly!
  */
 #ifndef IP_REASS_MAX_PBUFS
-#define IP_REASS_MAX_PBUFS              10
+#define IP_REASS_MAX_PBUFS              16
 #endif
 
 /**

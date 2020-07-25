@@ -4,3 +4,6 @@
 [submodule "firmware/lwip"]
 	path = firmware/lwIP
 	url = https://git.savannah.gnu.org/git/lwip/
+[submodule "firmware/wolfSSL"]
+	path = firmware/wolfSSL
+	url = https://github.com/wolfSSL/wolfssl.git

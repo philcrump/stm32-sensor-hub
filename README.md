@@ -15,6 +15,16 @@ The hardware components are:
 `/api/status`
 * `{"contacts": [{"name": "CH1", "value": 0}], "environmentals": [{"name": "CH2-FAKE", "temperature": 17.60, "humidity": 65.50}]}`
 
+## TLS Notes
+
+Currently NETCONN_COPY is used for all send calls, this means that `MEM_SIZE` in *cfg/lwipopts.h* must be larger than the largest file.
+
+Works well with firefox.
+
+Ocasionally gives curl a TCP reset.
+
+Does not work with android phone at all (and breaks firefox's connection at the time, sometimes needing a board reset)
+
 ## Software Compilation
 
 This toolchain is designed for Linux.
