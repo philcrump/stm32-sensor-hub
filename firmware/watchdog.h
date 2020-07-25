@@ -2,8 +2,10 @@
 #define __WATCHDOG_H__
 
 #define WATCHDOG_DOG_MAIN        0
+#define WATCHDOG_DOG_WEB_TLS     1
 
-#define WATCHDOG_MASK       ((1 << WATCHDOG_DOG_MAIN))
+#define WATCHDOG_MASK       ((1 << WATCHDOG_DOG_MAIN) \
+							| (0 << WATCHDOG_DOG_WEB_TLS))
 
 void watchdog_init(void);
 

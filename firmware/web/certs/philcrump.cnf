@@ -1,0 +1,8 @@
+[ req ]
+prompt = no
+distinguished_name = dn
+
+[ dn ]
+C = UK
+O = Phil Crump
+CN = philcrump.co.uk

@@ -25,11 +25,11 @@
 #define WEB_H
 
 #ifndef WEB_THREAD_STACK_SIZE
-#define WEB_THREAD_STACK_SIZE   1024
+#define WEB_THREAD_STACK_SIZE   (16 * 1024)
 #endif
 
 #ifndef WEB_THREAD_PORT
-#define WEB_THREAD_PORT         80
+#define WEB_THREAD_PORT         443 // 80
 #endif
 
 #ifndef WEB_THREAD_PRIORITY

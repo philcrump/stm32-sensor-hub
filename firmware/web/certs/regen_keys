@@ -1,0 +1,7 @@
+#!/bin/bash
+
+openssl req -x509 -sha256 -nodes -days 365 -newkey ec:<(openssl ecparam -name prime256v1) -config philcrump.cnf -outform der -keyout server.key.pem -out server.crt
+openssl ec -in server.key.pem -outform der -out server.key
+
+xxd -i server.crt > ../cert.c 
+xxd -i server.key >> ../cert.c

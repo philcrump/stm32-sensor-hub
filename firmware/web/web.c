@@ -13,6 +13,15 @@
 
 #include <string.h>
 
+#include "wolfssl_chibios.h"
+
+
+/* cert.c */
+extern unsigned char server_crt[];
+extern unsigned int server_crt_len;
+extern unsigned char server_key[];
+extern unsigned int server_key_len;
+
 static char packet_buffer[WEB_MAX_PACKET_SIZE];
 static char url_buffer[WEB_MAX_PATH_SIZE];
 /**
@@ -87,33 +96,16 @@ static bool decode_url(const char *url, char *buf, size_t max)
   }
 }
 
-static void http_server_serve(struct netconn *conn)
+static void tls_request_write(void *v_conn, const char *ptr, uint32_t length)
 {
-  struct netbuf *inbuf;
-  err_t err;
-  u16_t packetlen;
+  wolfSSL_write(((sslconn *)v_conn)->ssl, ptr, length);
+}
 
-  /* Read the data from the port, blocking if nothing yet there.
-   We assume the request (the part we care about) is in one netbuf */
-  err = netconn_recv(conn, &inbuf);
+static void tls_server_serve(sslconn *sc)
+{
+  uint32_t packetlen;
 
-  if(err != ERR_OK)
-  {
-    netconn_close(conn);
-    netbuf_delete(inbuf);
-    return;
-  }
-
-  packetlen = netbuf_len(inbuf);
-  /* Check we've got room for the packet */
-  if(packetlen >= WEB_MAX_PACKET_SIZE)
-  {
-    /* We haven't, fail */
-    netconn_close(conn);
-    netbuf_delete(inbuf);
-    return;
-  }
-  netbuf_copy(inbuf, packet_buffer, WEB_MAX_PACKET_SIZE);
+  packetlen = wolfSSL_read(sc->ssl, packet_buffer, WEB_MAX_PACKET_SIZE);
 
   /* Is this an HTTP GET command? (only check the first 5 chars, since
   there are other formats for GET, and we're keeping it very simple )*/
@@ -122,20 +114,11 @@ static void http_server_serve(struct netconn *conn)
     if(!decode_url(packet_buffer + (4 * sizeof(char)), url_buffer, WEB_MAX_PATH_SIZE))
     {
       /* URL decode failed.*/
-      netconn_close(conn);
-      netbuf_delete(inbuf);
       return;
     }
 
-    web_paths_get(conn, url_buffer);
+    web_paths_get(tls_request_write, (void *)sc, url_buffer);
   }
-
-  /* Close the connection (server closes in HTTP) */
-  netconn_close(conn);
-
-  /* Delete the buffer (netconn_recv gives us ownership,
-   so we have to make sure to deallocate the buffer) */
-  netbuf_delete(inbuf);
 }
 
 /**
@@ -147,31 +130,65 @@ THD_WORKING_AREA(wa_http_server, WEB_THREAD_STACK_SIZE);
  * HTTP server thread.
  */
 THD_FUNCTION(http_server, p) {
-  struct netconn *conn, *newconn;
-  err_t err;
+  //struct netconn *conn, *newconn;
+  //err_t err;
+  sslconn *sslconn, *newsslconn;
 
   (void)p;
   chRegSetThreadName("http");
 
-  /* Create a new TCP connection handle */
-  conn = netconn_new(NETCONN_TCP);
-  LWIP_ERROR("http_server: invalid conn", (conn != NULL), chThdExit(MSG_RESET););
+  watchdog_feed(WATCHDOG_DOG_WEB_TLS);
 
-  /* Bind to port 80 (HTTP) with default IP address */
-  netconn_bind(conn, NULL, WEB_THREAD_PORT);
+  /* Initialize wolfSSL */
+  wolfSSL_Init();
+
+  watchdog_feed(WATCHDOG_DOG_WEB_TLS);
+
+  /* Create a new SSL connection handle */
+  sslconn = sslconn_new(NETCONN_TCP, wolfTLSv1_2_server_method());
+  if (!sslconn) {
+      chThdExit(MSG_RESET);
+  }
+
+  /* Load certificate file for the HTTPS server */
+  if (wolfSSL_CTX_use_certificate_buffer(sslconn->ctx, server_crt,
+              server_crt_len, SSL_FILETYPE_ASN1 ) != SSL_SUCCESS)
+  {
+    chThdExit(MSG_RESET);
+  }
+
+  /* Load the private key */
+  if (wolfSSL_CTX_use_PrivateKey_buffer(sslconn->ctx, server_key, 
+              server_key_len, SSL_FILETYPE_ASN1 ) != SSL_SUCCESS)
+  {
+    chThdExit(MSG_RESET);
+  }
+
+  /* Bind to port 443 (HTTPS) with default IP address */
+  netconn_bind(sslconn->conn, NULL, WEB_THREAD_PORT);
 
   /* Put the connection into LISTEN state */
-  netconn_listen(conn);
+  netconn_listen(sslconn->conn);
 
   /* Goes to the final priority after initialization.*/
   chThdSetPriority(WEB_THREAD_PRIORITY);
 
-  while (true) {
-    err = netconn_accept(conn, &newconn);
-    if (err != ERR_OK)
-      continue;
-    http_server_serve(newconn);
-    netconn_delete(newconn);
+  /* Listening loop */
+  while (true)
+  {
+    watchdog_feed(WATCHDOG_DOG_WEB_TLS);
+    newsslconn = sslconn_accept(sslconn);
+    if (!newsslconn)
+    {
+        chThdSleepMilliseconds(5);
+        continue;
+    }
+    watchdog_feed(WATCHDOG_DOG_WEB_TLS);
+
+    /* New connection: a new SSL connector is spawned */
+    tls_server_serve(newsslconn);
+
+    sslconn_close(newsslconn);
   }
 }
 
