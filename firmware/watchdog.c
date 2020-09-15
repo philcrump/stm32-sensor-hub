@@ -4,6 +4,8 @@ static const WDGConfig wdg_cfg = {
   // 40 KHz input clock from LSI
   .pr = STM32_IWDG_PR_256, // Prescaler = 256 => 156.25Hz
   .rlr = STM32_IWDG_RL(79), // Reload value = 79 (slightly over 500ms),
+  /* STM32F7 WDG is window mode by default */
+  .winr = STM32_IWDG_WIN_DISABLED
 };
 
 static bool wdg_initialised = false;

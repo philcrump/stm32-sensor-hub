@@ -5,7 +5,7 @@
 
 # Compiler options here.
 ifeq ($(USE_OPT),)
-  USE_OPT = -Og -ggdb -fomit-frame-pointer -falign-functions=16 -specs=nosys.specs
+  USE_OPT = -Os -ggdb -fomit-frame-pointer -falign-functions=16 # -specs=nosys.specs
 endif
 
 # C specific options here (added to USE_OPT).
@@ -71,7 +71,7 @@ endif
 
 # FPU-related options.
 ifeq ($(USE_FPU_OPT),)
-  USE_FPU_OPT = -mfloat-abi=$(USE_FPU) -mfpu=fpv4-sp-d16
+  USE_FPU_OPT = -mfloat-abi=$(USE_FPU) -mfpu=fpv5-d16
 endif
 
 #
@@ -86,7 +86,7 @@ endif
 PROJECT = $(TARGET_FILENAME)
 
 # Target settings.
-MCU  = cortex-m4
+MCU  = cortex-m7
 
 # Imported source files and paths.
 CHIBIOS  := ChibiOS
@@ -102,10 +102,10 @@ BOARDINC = $(CONFDIR)
 # Licensing files.
 include $(CHIBIOS)/os/license/license.mk
 # Startup files.
-include $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_stm32f4xx.mk
+include $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_stm32f7xx.mk
 # HAL-OSAL files (optional).
 include $(CHIBIOS)/os/hal/hal.mk
-include $(CHIBIOS)/os/hal/ports/STM32/STM32F4xx/platform.mk
+include $(CHIBIOS)/os/hal/ports/STM32/STM32F7xx/platform.mk
 include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
@@ -117,7 +117,7 @@ include $(CHIBIOS)/os/hal/lib/streams/streams.mk
 include $(CONFDIR)/ch_lwip_bindings.mk
 
 # Define linker script file here
-LDSCRIPT= $(STARTUPLD)/STM32F429xI.ld
+LDSCRIPT= $(CONFDIR)/STM32F76xxI-user_settings.ld
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
@@ -131,6 +131,9 @@ CSRC = $(ALLCSRC) \
        environmentals.c \
        web/web.c \
        web/web_paths.c \
+       shell/shell.c \
+       shell/usbcfg.c \
+       shell/shell_cmd_version.c \
        main.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global

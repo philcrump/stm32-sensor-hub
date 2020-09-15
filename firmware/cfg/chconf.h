@@ -39,6 +39,21 @@
 #endif
 #define CHPRINTF_USE_FLOAT                TRUE
 
+#define SHELL_PROMPT_STR            "> "
+#define SHELL_USE_HISTORY              TRUE 
+#define SHELL_USE_COMPLETION              TRUE 
+#define SHELL_USE_ESC_SEQ              TRUE 
+
+
+/* Disable all built-in shell commands */
+#define SHELL_CMD_EXIT_ENABLED              FALSE
+#define SHELL_CMD_INFO_ENABLED              FALSE
+#define SHELL_CMD_ECHO_ENABLED              FALSE
+#define SHELL_CMD_SYSTIME_ENABLED           FALSE
+#define SHELL_CMD_MEM_ENABLED               FALSE
+#define SHELL_CMD_THREADS_ENABLED           FALSE
+#define SHELL_CMD_TEST_ENABLED              FALSE
+
 /*===========================================================================*/
 /**
  * @name System timers settings

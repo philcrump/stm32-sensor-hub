@@ -27,14 +27,14 @@
 /*===========================================================================*/
 
 /*
- * Setup for STMicroelectronics STM32 Nucleo144-F429ZI board.
+ * Setup for STMicroelectronics STM32 Nucleo144-F767ZI board.
  */
 
 /*
  * Board identifier.
  */
-#define BOARD_ST_NUCLEO144_F429ZI
-#define BOARD_NAME                  "STMicroelectronics STM32 Nucleo144-F429ZI"
+#define BOARD_ST_NUCLEO144_F767ZI
+#define BOARD_NAME                  "STMicroelectronics STM32 Nucleo144-F767ZI"
 
 /*
  * Ethernet PHY type.
@@ -44,11 +44,12 @@
 
 /*
  * Board oscillators-related settings.
- * NOTE: LSE not fitted.
  */
 #if !defined(STM32_LSECLK)
-#define STM32_LSECLK                0U
+#define STM32_LSECLK                32768U
 #endif
+
+#define STM32_LSEDRV                (3U << 3U)
 
 #if !defined(STM32_HSECLK)
 #define STM32_HSECLK                8000000U
@@ -65,7 +66,7 @@
 /*
  * MCU type as defined in the ST header.
  */
-#define STM32F429xx
+#define STM32F767xx
 
 /*
  * IO pins assignments.
@@ -102,6 +103,7 @@
 #define GPIOB_ZIO_A6                1U
 #define GPIOB_ADC12_IN9             1U
 #define GPIOB_ZIO_D27               2U
+#define GPIOB_QSPI_CLK              2U
 #define GPIOB_ZIO_D23               3U
 #define GPIOB_I2S3_CK               3U
 #define GPIOB_ZIO_D25               4U
@@ -109,6 +111,7 @@
 #define GPIOB_ZIO_D22               5U
 #define GPIOB_I2S3_SD               5U
 #define GPIOB_ZIO_D26               6U
+#define GPIOB_QSPI_BK1_NCS          6U
 #define GPIOB_LED2                  7U
 #define GPIOB_ARD_D15               8U
 #define GPIOB_I2C1_SCL              8U
@@ -176,8 +179,11 @@
 #define GPIOD_STLK_TX               9U
 #define GPIOD_PIN10                 10U
 #define GPIOD_ZIO_D30               11U
+#define GPIOD_QSPI_BK1_IO0          11U
 #define GPIOD_ZIO_D29               12U
+#define GPIOD_QSPI_BK1_IO1          12U
 #define GPIOD_ZIO_D28               13U
+#define GPIOD_QSPI_BK1_IO3          13U
 #define GPIOD_ARD_D10               14U
 #define GPIOD_SPI1_NSS              14U
 #define GPIOD_ARD_D9                15U
@@ -363,6 +369,7 @@
 #define LINE_ZIO_A6                 PAL_LINE(GPIOB, 1U)
 #define LINE_ADC12_IN9              PAL_LINE(GPIOB, 1U)
 #define LINE_ZIO_D27                PAL_LINE(GPIOB, 2U)
+#define LINE_QSPI_CLK               PAL_LINE(GPIOB, 2U)
 #define LINE_ZIO_D23                PAL_LINE(GPIOB, 3U)
 #define LINE_I2S3_CK                PAL_LINE(GPIOB, 3U)
 #define LINE_ZIO_D25                PAL_LINE(GPIOB, 4U)
@@ -370,6 +377,7 @@
 #define LINE_ZIO_D22                PAL_LINE(GPIOB, 5U)
 #define LINE_I2S3_SD                PAL_LINE(GPIOB, 5U)
 #define LINE_ZIO_D26                PAL_LINE(GPIOB, 6U)
+#define LINE_QSPI_BK1_NCS           PAL_LINE(GPIOB, 6U)
 #define LINE_LED2                   PAL_LINE(GPIOB, 7U)
 #define LINE_ARD_D15                PAL_LINE(GPIOB, 8U)
 #define LINE_I2C1_SCL               PAL_LINE(GPIOB, 8U)
@@ -434,8 +442,11 @@
 #define LINE_USART3_TX              PAL_LINE(GPIOD, 9U)
 #define LINE_STLK_TX                PAL_LINE(GPIOD, 9U)
 #define LINE_ZIO_D30                PAL_LINE(GPIOD, 11U)
+#define LINE_QSPI_BK1_IO0           PAL_LINE(GPIOD, 11U)
 #define LINE_ZIO_D29                PAL_LINE(GPIOD, 12U)
+#define LINE_QSPI_BK1_IO1           PAL_LINE(GPIOD, 12U)
 #define LINE_ZIO_D28                PAL_LINE(GPIOD, 13U)
+#define LINE_QSPI_BK1_IO3           PAL_LINE(GPIOD, 13U)
 #define LINE_ARD_D10                PAL_LINE(GPIOD, 14U)
 #define LINE_SPI1_NSS               PAL_LINE(GPIOD, 14U)
 #define LINE_ARD_D9                 PAL_LINE(GPIOD, 15U)
@@ -669,11 +680,11 @@
  *
  * PB0  - ZIO_D33 TIM3_CH3 LED1     (output pushpull maximum).
  * PB1  - ZIO_A6 ADC12_IN9          (input pullup).
- * PB2  - ZIO_D27                   (input pullup).
+ * PB2  - ZIO_D27 QSPI_CLK          (input pullup).
  * PB3  - ZIO_D23 I2S3_CK           (input pullup).
  * PB4  - ZIO_D25 SPI3_MISO         (input pullup).
  * PB5  - ZIO_D22 I2S3_SD           (input pullup).
- * PB6  - ZIO_D26                   (input pullup).
+ * PB6  - ZIO_D26 QSPI_BK1_NCS      (input pullup).
  * PB7  - LED2                      (output pushpull maximum).
  * PB8  - ARD_D15 I2C1_SCL          (input pullup).
  * PB9  - ARD_D14 I2C1_SDA          (input pullup).
@@ -718,11 +729,11 @@
                                      PIN_OTYPE_PUSHPULL(GPIOB_ZIO_D17))
 #define VAL_GPIOB_OSPEEDR           (PIN_OSPEED_HIGH(GPIOB_ZIO_D33) |       \
                                      PIN_OSPEED_HIGH(GPIOB_ZIO_A6) |        \
-                                     PIN_OSPEED_VERYLOW(GPIOB_ZIO_D27) |    \
+                                     PIN_OSPEED_HIGH(GPIOB_ZIO_D27) |       \
                                      PIN_OSPEED_HIGH(GPIOB_ZIO_D23) |       \
                                      PIN_OSPEED_HIGH(GPIOB_ZIO_D25) |       \
                                      PIN_OSPEED_HIGH(GPIOB_ZIO_D22) |       \
-                                     PIN_OSPEED_VERYLOW(GPIOB_ZIO_D26) |    \
+                                     PIN_OSPEED_HIGH(GPIOB_ZIO_D26) |       \
                                      PIN_OSPEED_HIGH(GPIOB_LED2) |          \
                                      PIN_OSPEED_HIGH(GPIOB_ARD_D15) |       \
                                      PIN_OSPEED_HIGH(GPIOB_ARD_D14) |       \
@@ -912,9 +923,9 @@
  * PD8  - USART3_RX STLK_RX         (alternate 7).
  * PD9  - USART3_TX STLK_TX         (alternate 7).
  * PD10 - PIN10                     (input pullup).
- * PD11 - ZIO_D30                   (input pullup).
- * PD12 - ZIO_D29                   (input pullup).
- * PD13 - ZIO_D28                   (input pullup).
+ * PD11 - ZIO_D30 QSPI_BK1_IO0      (input pullup).
+ * PD12 - ZIO_D29 QSPI_BK1_IO1      (input pullup).
+ * PD13 - ZIO_D28 QSPI_BK1_IO3      (input pullup).
  * PD14 - ARD_D10 SPI1_NSS          (input pullup).
  * PD15 - ARD_D9 TIM4_CH4           (input pullup).
  */
@@ -961,9 +972,9 @@
                                      PIN_OSPEED_HIGH(GPIOD_USART3_RX) |     \
                                      PIN_OSPEED_HIGH(GPIOD_USART3_TX) |     \
                                      PIN_OSPEED_VERYLOW(GPIOD_PIN10) |      \
-                                     PIN_OSPEED_VERYLOW(GPIOD_ZIO_D30) |    \
-                                     PIN_OSPEED_VERYLOW(GPIOD_ZIO_D29) |    \
-                                     PIN_OSPEED_VERYLOW(GPIOD_ZIO_D28) |    \
+                                     PIN_OSPEED_HIGH(GPIOD_ZIO_D30) |       \
+                                     PIN_OSPEED_HIGH(GPIOD_ZIO_D29) |       \
+                                     PIN_OSPEED_HIGH(GPIOD_ZIO_D28) |       \
                                      PIN_OSPEED_HIGH(GPIOD_ARD_D10) |       \
                                      PIN_OSPEED_HIGH(GPIOD_ARD_D9))
 #define VAL_GPIOD_PUPDR             (PIN_PUPDR_PULLUP(GPIOD_ZIO_D67) |      \
@@ -1006,8 +1017,8 @@
                                      PIN_AFIO_AF(GPIOD_ZIO_D53, 0U) |       \
                                      PIN_AFIO_AF(GPIOD_ZIO_D52, 0U) |       \
                                      PIN_AFIO_AF(GPIOD_ZIO_D51, 0U))
-#define VAL_GPIOD_AFRH              (PIN_AFIO_AF(GPIOD_USART3_RX, 0U) |     \
-                                     PIN_AFIO_AF(GPIOD_USART3_TX, 0U) |     \
+#define VAL_GPIOD_AFRH              (PIN_AFIO_AF(GPIOD_USART3_RX, 7U) |     \
+                                     PIN_AFIO_AF(GPIOD_USART3_TX, 7U) |     \
                                      PIN_AFIO_AF(GPIOD_PIN10, 0U) |         \
                                      PIN_AFIO_AF(GPIOD_ZIO_D30, 0U) |       \
                                      PIN_AFIO_AF(GPIOD_ZIO_D29, 0U) |       \

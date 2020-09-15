@@ -28,5 +28,6 @@
 #include "contacts.h"
 #include "environmentals.h"
 #include "web/web.h"
+#include "shell/shell.h"
 
 #endif /* __MAIN_H__ */
