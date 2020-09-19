@@ -1,0 +1,18 @@
+name: Test Build
+
+on: [push]
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install toolchain
+      uses: fiam/arm-none-eabi-gcc@v1
+      with:
+        release: '9-2020-q2'
+    - name: Build
+      shell: bash
+      run: cd firmware/ && ./build -M -w
