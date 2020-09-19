@@ -1,10 +1,10 @@
-# Sensor Hub [![Build Status](https://travis-ci.org/philcrump/stm32-sensor-hub.svg?branch=master)](https://travis-ci.org/philcrump/stm32-sensor-hub)
+# Sensor Hub
 
 This project exposes the status of connected sensors on a HTTP Webpage & API, using the ChibiOS (20.3.x) and lwIP (2.1.x) software stacks.
 
 The hardware components are:
 
-* ST STM32F429ZI ARM Cortex-M4 Development Board - [Product Link](https://www.st.com/en/evaluation-tools/nucleo-f429zi.html)
+* ST STM32F767ZI ARM Cortex-M7 Development Board - [Product Link](https://www.st.com/en/evaluation-tools/nucleo-f767zi.html)
 
 <p float="center">
   <img src="/images/web-screenshot.png" width="49%" />
