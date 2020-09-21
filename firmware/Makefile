@@ -129,11 +129,14 @@ CSRC = $(ALLCSRC) \
        ip_link.c \
        contacts.c \
        environmentals.c \
+       config.c \
        web/web.c \
        web/web_paths.c \
        shell/shell.c \
        shell/usbcfg.c \
-       shell/shell_cmd_version.c \
+       shell/shell_cmd_netconfig.c \
+       shell/shell_cmd_resetconfig.c \
+       shell/shell_cmd_reboot.c \
        main.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
@@ -164,7 +167,7 @@ CPPWARN = -Wall -Wextra -Wundef
 #
 
 # List all user C define here, like -D_DEBUG=1
-UDEFS =
+UDEFS = -DGITVERSION="\"$(GITVERSION)\"" -DGITVERSION_X32="$(GITVERSION_X32)"
 
 # Define ASM defines here
 UADEFS =

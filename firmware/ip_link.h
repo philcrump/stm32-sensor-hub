@@ -7,7 +7,4 @@
 
 uint32_t app_ip_link_status(void);
 
-void ip_link_up_cb(void *p);
-void ip_link_down_cb(void *p);
-
 #endif /* __IP_LINK_H__ */

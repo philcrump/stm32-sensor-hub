@@ -22,11 +22,16 @@
 #define ITERATOR_VAR()    iterator < 1 ? "/" : iterator < 2 ? "-" : "\\"
 #define ITERATOR_INC()    iterator = iterator < 2 ? iterator + 1 : 0
 
+#define debugWriteChar(c)  sdPut(&SD3, c)
+#define debugWriteStr(s)  sdWrite(&SD3, (uint8_t *)s, sizeof(s))
+#define debugPrintf(...) chprintf((BaseSequentialStream*)&SD3, __VA_ARGS__)
+
 #include "watchdog.h"
 #include "random.h"
 #include "ip_link.h"
 #include "contacts.h"
 #include "environmentals.h"
+#include "config.h"
 #include "web/web.h"
 #include "shell/shell.h"
 

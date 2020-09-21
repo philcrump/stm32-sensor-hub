@@ -22,22 +22,20 @@
  * @{
  */
 
-#include <string.h>
+#include "../main.h"
 
-#include "ch.h"
-#include "hal.h"
 #include "shell.h"
 #include "chprintf.h"
-
 #include "shell_cmds.h"
-
 #include "usbcfg.h"
 
-#define SHELL_WELCOME_BANNER  "Sensor Hub"
+#include <string.h>
 
 static const ShellCommand commands[] = {
-  {"version", shell_cmd_version},
-  {NULL, NULL}
+  {"netconfig",   "Set Network Configuration", shell_cmd_netconfig},
+  {"resetconfig", "Reset all Configuration",   shell_cmd_resetconfig},
+  {"reboot",      "Reboot the device",         shell_cmd_reboot},
+  {NULL, NULL, NULL}
 };
 
 static char _shellHistoryBuffer[256];
@@ -49,13 +47,20 @@ static const ShellConfig shell_cfg1 = {
   .sc_histsize = sizeof(_shellHistoryBuffer)
 };
 
-#define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(2048)
+/**
+ * @brief   Shell termination event source.
+ */
+event_source_t shell_terminated;
+
+static THD_WORKING_AREA(shell_wa, 2048);
 
 THD_FUNCTION(usbshell_service_thread, arg)
 {
   (void)arg;
+  chRegSetThreadName("shell_service");
 
-  shellInit();
+  /* shellInit(); */
+  chEvtObjectInit(&shell_terminated);
 
   /*
    * Initializes a serial-over-USB CDC driver.
@@ -69,46 +74,26 @@ THD_FUNCTION(usbshell_service_thread, arg)
    * after a reset.
    */
   usbDisconnectBus(serusbcfg.usbp);
+
   chThdSleepMilliseconds(1500);
+
   usbStart(serusbcfg.usbp, &usbcfg);
   usbConnectBus(serusbcfg.usbp);
 
   /*
    * Normal main() thread activity, spawning shells.
    */
-  while (true) {
-    if (SDU1.config->usbp->state == USB_ACTIVE) {
-      thread_t *shelltp = chThdCreateFromHeap(NULL, SHELL_WA_SIZE,
-                                              "shell", NORMALPRIO + 1,
-                                              shellThread, (void *)&shell_cfg1);
+  thread_t *shelltp;
+  while (true)
+  {
+    if (SDU1.config->usbp->state == USB_ACTIVE)
+    {
+      shelltp = chThdCreateStatic(shell_wa, sizeof(shell_wa), NORMALPRIO + 1, shellThread, (void *)&shell_cfg1);
       chThdWait(shelltp);               /* Waiting termination.             */
     }
     chThdSleepMilliseconds(100);
   }
  }
-
-/*===========================================================================*/
-/* Module local definitions.                                                 */
-/*===========================================================================*/
-
-/*===========================================================================*/
-/* Module exported variables.                                                */
-/*===========================================================================*/
-
-#if !defined(_CHIBIOS_NIL_) || defined(__DOXYGEN__)
-/**
- * @brief   Shell termination event source.
- */
-event_source_t shell_terminated;
-#endif
-
-/*===========================================================================*/
-/* Module local types.                                                       */
-/*===========================================================================*/
-
-/*===========================================================================*/
-/* Module local variables.                                                   */
-/*===========================================================================*/
 
 /*===========================================================================*/
 /* Module local functions.                                                   */
@@ -145,14 +130,6 @@ static char *parse_arguments(char *str, char **saveptr) {
   }
 
   return *p != '\0' ? p : NULL;
-}
-
-static void list_commands(BaseSequentialStream *chp, const ShellCommand *scp) {
-
-  while (scp->sc_name != NULL) {
-    chprintf(chp, "%s ", scp->sc_name);
-    scp++;
-  }
 }
 
 static bool cmdexec(const ShellCommand *scp, BaseSequentialStream *chp,
@@ -373,6 +350,49 @@ static void write_completions(ShellConfig *scfg, char *line, int pos) {
 }
 #endif
 
+#define IP4_ADDR_VALUE(a,b,c,d)        \
+        (((u32_t)((d) & 0xff) << 24) | \
+         ((u32_t)((c) & 0xff) << 16) | \
+         ((u32_t)((b) & 0xff) << 8)  | \
+          (u32_t)((a) & 0xff))
+
+#define chprintf_ip4_addr(_chp, u32_addr)   chprintf(_chp, "%d.%d.%d.%d", (u32_addr & 0xff), ((u32_addr >> 8) & 0xff), ((u32_addr >> 16) & 0xff), ((u32_addr >> 24) & 0xff))
+
+static void write_header(ShellConfig *scfg)
+{
+  BaseSequentialStream *chp = scfg->sc_channel;
+
+  chprintf(chp, "========================================" SHELL_NEWLINE_STR);
+
+  chprintf(chp, "***** Sensor Hub - Phil Crump 2020 *****" SHELL_NEWLINE_STR);
+  chprintf(chp, "* Version: " GITVERSION SHELL_NEWLINE_STR);
+  chprintf(chp, "* Network: Link UP, Addressing: Static" SHELL_NEWLINE_STR);
+
+  if(app_config.network.address_mode == NETWORK_ADDRESS_STATIC)
+  {
+    chprintf(chp, "    Address: ");
+      chprintf_ip4_addr(chp, app_config.network.address);
+      chprintf(chp, SHELL_NEWLINE_STR);
+    chprintf(chp, "    Netmask: ");
+      chprintf_ip4_addr(chp, app_config.network.netmask);
+      chprintf(chp, SHELL_NEWLINE_STR);
+    chprintf(chp, "    Gateway: ");
+      chprintf_ip4_addr(chp, app_config.network.gateway);
+      chprintf(chp, SHELL_NEWLINE_STR);
+  }
+
+  chprintf(chp, "* Available Commands: " SHELL_NEWLINE_STR);
+  if(scfg->sc_commands != NULL)
+  {
+    ShellCommand *scp = (ShellCommand *)scfg->sc_commands;
+    while (scp->sc_name != NULL) {
+      chprintf(chp, "    %s - %s" SHELL_NEWLINE_STR, scp->sc_name, scp->sc_description);
+      scp++;
+    }
+  }
+  chprintf(chp, "========================================" SHELL_NEWLINE_STR);
+}
+
 /*===========================================================================*/
 /* Module exported functions.                                                */
 /*===========================================================================*/
@@ -390,9 +410,7 @@ THD_FUNCTION(shellThread, p) {
   char *lp, *cmd, *tokp, line[SHELL_MAX_LINE_LENGTH];
   char *args[SHELL_MAX_ARGUMENTS + 1];
 
-#if !defined(_CHIBIOS_NIL_)
   chRegSetThreadName(SHELL_THREAD_NAME);
-#endif
 
 #if SHELL_USE_HISTORY == TRUE
   *(scfg->sc_histbuf) = 0;
@@ -409,23 +427,14 @@ THD_FUNCTION(shellThread, p) {
 #endif
 
   chprintf(chp, SHELL_NEWLINE_STR);
-  chprintf(chp, SHELL_WELCOME_BANNER SHELL_NEWLINE_STR);
-#if !defined(_CHIBIOS_NIL_)
+  chprintf(chp, SHELL_NEWLINE_STR);
+
   while (!chThdShouldTerminateX()) {
-#else
-  while (true) {
-#endif
     chprintf(chp, SHELL_PROMPT_STR);
     if (shellGetLine(scfg, line, sizeof(line), shp)) {
-#if (SHELL_CMD_EXIT_ENABLED == TRUE) && !defined(_CHIBIOS_NIL_)
-      chprintf(chp, SHELL_NEWLINE_STR);
-      chprintf(chp, "logout");
-      break;
-#else
       /* Putting a delay in order to avoid an endless loop trying to read
          an unavailable stream.*/
       osalThreadSleepMilliseconds(100);
-#endif
     }
     lp = parse_arguments(line, &tokp);
     cmd = lp;
@@ -439,41 +448,19 @@ THD_FUNCTION(shellThread, p) {
       args[n++] = lp;
     }
     args[n] = NULL;
-    if (cmd != NULL) {
-      if (strcmp(cmd, "help") == 0) {
-        if (n > 0) {
-          shellUsage(chp, "help");
-          continue;
-        }
-        chprintf(chp, "Available Commands: help ");
-        if (scp != NULL)
-          list_commands(chp, scp);
-        chprintf(chp, SHELL_NEWLINE_STR);
-      }
-      else if (cmdexec(scp, chp, cmd, n, args)) {
-        chprintf(chp, "%s", cmd);
-        chprintf(chp, " ?" SHELL_NEWLINE_STR);
+    if (cmd != NULL)
+    {
+      /* Iterate through registered commands */
+      if (cmdexec(scp, chp, cmd, n, args))
+      {
+        /* No command matched - print version/help header */
+        write_header(scfg);
       }
     }
   }
-#if !defined(_CHIBIOS_NIL_)
   shellExit(MSG_OK);
-#endif
 }
 
-/**
- * @brief   Shell manager initialization.
- *
- * @api
- */
-void shellInit(void) {
-
-#if !defined(_CHIBIOS_NIL_)
-  chEvtObjectInit(&shell_terminated);
-#endif
-}
-
-#if !defined(_CHIBIOS_NIL_) || defined(__DOXYGEN__)
 /**
  * @brief   Terminates the shell.
  * @note    Must be invoked from the command handlers.
@@ -491,7 +478,6 @@ void shellExit(msg_t msg) {
   chEvtBroadcastI(&shell_terminated);
   chThdExitS(msg);
 }
-#endif
 
 /**
  * @brief   Reads a whole line from the input channel.
@@ -575,12 +561,10 @@ bool shellGetLine(ShellConfig *scfg, char *line, unsigned size, ShellHistory *sh
       continue;
     }
 #endif
-#if (SHELL_CMD_EXIT_ENABLED == TRUE) && !defined(_CHIBIOS_NIL_)
     if (c == 4) {
-      chprintf(chp, "^D");
+      chprintf(chp, "^D" SHELL_NEWLINE_STR);
       return true;
     }
-#endif
     if ((c == 8) || (c == 127)) {
       if (p != line) {
         streamPut(chp, 0x08);
@@ -640,6 +624,62 @@ bool shellGetLine(ShellConfig *scfg, char *line, unsigned size, ShellHistory *sh
       continue;
     }
 #endif
+    if (c < 0x20)
+      continue;
+    if (p < line + size - 1) {
+      streamPut(chp, c);
+      *p++ = (char)c;
+    }
+  }
+}
+
+/**
+ * @brief   Reads a whole line from the input channel.
+ * @note    Input chars are echoed on the same stream object with the
+ *          following exceptions:
+ *          - DEL and BS are echoed as BS-SPACE-BS.
+ *          - CR is echoed as CR-LF.
+ *          - 0x4 is echoed as "^D".
+ *          - Other values below 0x20 are not echoed.
+ *          .
+ *
+ * @param[in] scfg      pointer to a @p ShellConfig object
+ * @param[in] line      pointer to the line buffer
+ * @param[in] size      buffer maximum length
+ * @param[in] shp       pointer to a @p ShellHistory object or NULL
+ * @return              The operation status.
+ * @retval true         the channel was reset or CTRL-D pressed.
+ * @retval false        operation successful.
+ *
+ * @api
+ */
+bool shellAppGetLine(BaseSequentialStream *chp, char *line, unsigned size)
+{
+  char *p = line;
+
+  while (true) {
+    char c;
+
+    if (streamRead(chp, (uint8_t *)&c, 1) == 0)
+      return true;
+    if (c == 4) {
+      chprintf(chp, "^D");
+      return true;
+    }
+    if ((c == 8) || (c == 127)) { /* Backspace or DEL */
+      if (p != line) {
+        streamPut(chp, 0x08);
+        streamPut(chp, 0x20);
+        streamPut(chp, 0x08);
+        p--;
+      }
+      continue;
+    }
+    if (c == '\r') {
+      chprintf(chp, SHELL_NEWLINE_STR);
+      *p = 0;
+      return false;
+    }
     if (c < 0x20)
       continue;
     if (p < line + size - 1) {

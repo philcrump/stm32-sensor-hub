@@ -133,6 +133,7 @@ typedef void (*shellcmd_t)(BaseSequentialStream *chp, int argc, char *argv[]);
  */
 typedef struct {
   const char            *sc_name;           /**< @brief Command name.       */
+  const char            *sc_description;    /**< @brief Command description.*/
   shellcmd_t            sc_function;        /**< @brief Command function.   */
 } ShellCommand;
 
@@ -224,6 +225,7 @@ extern "C" {
   void shellExit(msg_t msg);
   bool shellGetLine(ShellConfig *scfg, char *line,
                     unsigned size, ShellHistory *shp);
+  bool shellAppGetLine(BaseSequentialStream *chp, char *line, unsigned size);
 #ifdef __cplusplus
 }
 #endif

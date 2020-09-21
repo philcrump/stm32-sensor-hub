@@ -29,6 +29,16 @@ Running `firmware/build -M` will pack the web files and then compile all source 
 
 `firmware/build -MF` will build, and if successful also attempt to flash.
 
+Bootup output can be observed on the USB ACM (Virtual COM Port) shell on the ST-Link connector. The baudrate must be set to 115200.
+
+## Configuration
+
+A USB ACM (Virtual COM Port) shell is provided on the "User USB" micro-USB port for managing the configuration. This can be accessed with `screen /dev/ttyACMx` or PuTTY on windows. The configured baudrate doesn't matter here.
+
+The configuration is stored in the 2nd page of the Flash. This is not a good method as the write is slow, the integrity is hampered by the aggressive caching on the M7, and st-flash doesn't support sparse writes so the config is wiped on each firmware update. An external EEPROM or FRAM for configuration storage would be a valuable replacement. (eg. FM25CL64B 8KB)
+
+Once we have external storage so the development process is easier, this configuration should also store channel names and types.
+
 ## Hardware
 
 ### Dry Contacts

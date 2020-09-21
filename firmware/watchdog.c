@@ -11,6 +11,7 @@ static const WDGConfig wdg_cfg = {
 static bool wdg_initialised = false;
 static uint32_t mask = WATCHDOG_MASK;
 static uint32_t fed = 0;
+static bool starve = false;
 
 void watchdog_init(void)
 {
@@ -32,7 +33,7 @@ THD_FUNCTION(watchdog_service_thread, arg)
 
   while(1)
   {
-    if((mask & fed) == mask)
+    if(!starve && (mask & fed) == mask)
     {
       fed = 0;
 
@@ -48,4 +49,44 @@ THD_FUNCTION(watchdog_service_thread, arg)
 void watchdog_feed(uint32_t dog)
 {
   fed |= ((1 << dog) & 0xFFFFFFFF);
+}
+
+void watchdog_reconfigSlow(void)
+{
+  wdgReset(&WDGD1);
+
+  WDGD1.wdg->KR   = 0xCCCCU;
+  WDGD1.wdg->KR   = 0x5555U;
+
+  /* Write configuration.*/
+  WDGD1.wdg->PR   = wdg_cfg.pr;
+  WDGD1.wdg->RLR  = STM32_IWDG_RL(1560); // Reload value = 1560 (~10 seconds),
+
+  /* Wait the registers to be updated.*/
+  while (WDGD1.wdg->SR != 0) {};
+
+  wdgReset(&WDGD1);
+}
+
+void watchdog_reconfigDefault(void)
+{
+  wdgReset(&WDGD1);
+
+  WDGD1.wdg->KR   = 0xCCCCU;
+  WDGD1.wdg->KR   = 0x5555U;
+
+  /* Write configuration.*/
+  WDGD1.wdg->PR   = wdg_cfg.pr;
+  WDGD1.wdg->RLR  = wdg_cfg.rlr;
+
+  /* Wait the registers to be updated.*/
+  while (WDGD1.wdg->SR != 0) {};
+
+  wdgReset(&WDGD1);
+}
+
+/* Used for triggering a reboot */
+void watchdog_starve(void)
+{
+  starve = true;
 }
