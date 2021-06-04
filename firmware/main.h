@@ -26,6 +26,14 @@
 #define debugWriteStr(s)  sdWrite(&SD3, (uint8_t *)s, sizeof(s))
 #define debugPrintf(...) chprintf((BaseSequentialStream*)&SD3, __VA_ARGS__)
 
+#define IP4_ADDR_VALUE(a,b,c,d)        \
+        (((u32_t)((d) & 0xff) << 24) | \
+         ((u32_t)((c) & 0xff) << 16) | \
+         ((u32_t)((b) & 0xff) << 8)  | \
+          (u32_t)((a) & 0xff))
+
+#define chprintf_ip4_addr(_chp, u32_addr)   chprintf(_chp, "%d.%d.%d.%d", (u32_addr & 0xff), ((u32_addr >> 8) & 0xff), ((u32_addr >> 16) & 0xff), ((u32_addr >> 24) & 0xff))
+
 #include "watchdog.h"
 #include "random.h"
 #include "ip_link.h"

@@ -22,19 +22,19 @@ static THD_FUNCTION(blinker_thread, arg)
     ip_status = app_ip_link_status();
     if(ip_status == APP_IP_LINK_STATUS_DOWN)
     {
-      palClearLine(LINE_LED2);
+      palClearLine(LINE_LED_YELLOW);
     }
     else if(ip_status == APP_IP_LINK_STATUS_UPBUTNOIP)
     {
-      palToggleLine(LINE_LED2);
+      palToggleLine(LINE_LED_YELLOW);
     }
     else if(ip_status == APP_IP_LINK_STATUS_BOUND)
     {
-      palSetLine(LINE_LED2);
+      palSetLine(LINE_LED_YELLOW);
     }
     if((heartbeat_flip = !heartbeat_flip))
     {
-      palToggleLine(LINE_LED1);
+      palToggleLine(LINE_LED_GREEN);
     }
     chThdSleepMilliseconds(120);
   }
@@ -50,9 +50,6 @@ int main(void)
   watchdog_init();
   chThdCreateStatic(watchdog_service_wa, sizeof(watchdog_service_wa), HIGHPRIO, watchdog_service_thread, NULL);
 
-  /* For some really weird reason the ethernet peripheral requires the PLL SAI clock to be on (both STM32F4 & STM32F7) */
-  RCC->CR |= RCC_CR_PLLSAION;
-  while(!(RCC->CR & RCC_CR_PLLSAIRDY)) {};
   /* Enable CRC clock */
   rccEnableCRC(0);
 
@@ -107,7 +104,6 @@ int main(void)
     chThdSleepMilliseconds(100);
   }
 }
-
 
 /* On hard fault, copy HARDFAULT_PSP to the sp reg so gdb can give a trace */
 void **HARDFAULT_PSP;

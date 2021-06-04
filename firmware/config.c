@@ -24,7 +24,7 @@ static lwipthread_opts_t lwip_config = {
   .netmask = 0,
   .gateway = 0,
   .addrMode = NET_ADDRESS_DHCP,
-  .ourHostName = "sensor-hub",
+  .ourHostName = "sensor-hub-h7",
   .link_up_cb = NULL,
   .link_down_cb = NULL
 };
@@ -47,6 +47,7 @@ static uint32_t config_crc32(void)
 static void config_write(void)
 {
   palSetLine(LINE_LED3);
+#if 0
   watchdog_reconfigSlow();
 
   debugWriteStr("Writing config to flash..\r\n");
@@ -94,6 +95,7 @@ static void config_write(void)
   debugWriteStr("Config write complete\r\n");
 
   watchdog_reconfigDefault();
+#endif
   palClearLine(LINE_LED3);
 }
 
@@ -104,7 +106,7 @@ void config_setdefaults(void)
   app_config.network.gateway = IP4_ADDR_VALUE(192,168,0,1);
   //app_config.network.address_mode = NETWORK_ADDRESS_STATIC;
   app_config.network.address_mode = NETWORK_ADDRESS_DHCP;
-  strncpy(app_config.network.hostname, "sensor-hub", 63);
+  strncpy(app_config.network.hostname, "sensor-hub-h7", 63);
 
   config_write();
 }

@@ -1,6 +1,6 @@
 #include "main.h"
 
-#include <lwip/dhcp.h>
+#include "lwip/dhcp.h"
 
 static struct netif* _ip_netif_ptr = NULL;
 

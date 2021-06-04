@@ -88,7 +88,7 @@ PROJECT = $(TARGET_FILENAME)
 # Target settings.
 MCU  = cortex-m7
 
-# Imported source files and paths.
+# Imported source files and paths.qq
 CHIBIOS  := ChibiOS
 LWIP     := lwIP
 CONFDIR  := ./cfg
@@ -102,14 +102,14 @@ BOARDINC = $(CONFDIR)
 # Licensing files.
 include $(CHIBIOS)/os/license/license.mk
 # Startup files.
-include $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_stm32f7xx.mk
+include $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_stm32h7xx.mk
 # HAL-OSAL files (optional).
 include $(CHIBIOS)/os/hal/hal.mk
-include $(CHIBIOS)/os/hal/ports/STM32/STM32F7xx/platform.mk
+include $(CHIBIOS)/os/hal/ports/STM32/STM32H7xx/platform.mk
 include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
-include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
+include $(CHIBIOS)/os/common/ports/ARMv7-M/compilers/GCC/mk/port.mk
 # chprintf
 include $(CHIBIOS)/os/hal/lib/streams/streams.mk
 # lwIP
@@ -117,7 +117,7 @@ include $(CHIBIOS)/os/hal/lib/streams/streams.mk
 include $(CONFDIR)/ch_lwip_bindings.mk
 
 # Define linker script file here
-LDSCRIPT= $(CONFDIR)/STM32F76xxI-user_settings.ld
+LDSCRIPT= $(CONFDIR)/STM32H753xI.ld
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
