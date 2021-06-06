@@ -8,11 +8,6 @@
 extern void watchdog_reconfigSlow(void);
 extern void watchdog_reconfigDefault(void);
 
-#define FLASH_CONFIG_BASE_ADDR  0x08008000
-
-#define FLASH_KEY1   0x45670123
-#define FLASH_KEY2   0xCDEF89AB
-
 #define APP_CONFIG_CRC_PAYLOAD_WSIZE (((sizeof(uint32_t) + sizeof(app_config_network_t)) >> 2) + 1)
 
 app_config_t app_config;
@@ -48,53 +43,53 @@ static void config_write(void)
 {
   palSetLine(LINE_LED3);
 #if 0
-  watchdog_reconfigSlow();
 
-  debugWriteStr("Writing config to flash..\r\n");
+  #define FRAM_OPCODE_WREN  0x06 // Set write enable latch
+  #define FRAM_OPCODE_WRDI  0x04 // Reset write enable latch
 
-  app_config.crc = config_crc32();
+  #define FRAM_OPCODE_RDSR  0x05 // Read Status Register
+  #define FRAM_OPCODE_WRSR  0x01 // Write Status Register
 
-  /* Unlock Flash if not already unlocked */
-  if((FLASH->CR & FLASH_CR_LOCK) != 0U)
+  #define FRAM_OPCODE_READ  0x03 // Read memory data
+  #define FRAM_OPCODE_FSTRD 0x0b // Fast read memory data
+  #define FRAM_OPCODE_WRITE 0x02 // Write memory data
+
+  #define FRAM_OPCODE_SLEEP 0x99 // Enter sleep mode
+  #define FRAM_OPCODE_RDID  0x9F // Read device ID
+  #define FRAM_OPCODE_SNR   0xc3 // Read S/N
+
+  static uint8_t fram_deviceid[9] = { 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0xC2, 0x24, 0x00 };
+
+  bool FRAM_selfTest(void)
   {
-    FLASH->KEYR |= FLASH_KEY1;
-    FLASH->KEYR |= FLASH_KEY2;
+    uint8_t fram_deviceid_read[9];
+
+    SPI_burstread8(SPI_FRAM, FRAM_OPCODE_RDID, fram_deviceid_read, 9);
+
+    return !memcmp(fram_deviceid_read, fram_deviceid, 9);
   }
 
-  /* Erase Sector */
-  while ((FLASH->SR & FLASH_SR_BSY) != 0U) { };
-  FLASH->CR &= ~(FLASH_CR_MER1 | FLASH_CR_MER2); // Clear Mass Erase bits
-  FLASH->CR |= FLASH_CR_PSIZE_1; // x32 (32b word)
-  FLASH->CR |= FLASH_CR_SER; // Sector Erase
-  FLASH->CR |= FLASH_CR_SNB_0; // Sector 1
-  asm volatile("dsb; isb"); // Ensure completion of above writes
-  FLASH->CR |= FLASH_CR_STRT; // Start sector erase
-  while ((FLASH->SR & FLASH_SR_BSY) != 0U) { };
-  FLASH->CR &= ~(FLASH_CR_SER | FLASH_CR_SNB_0); // Clear
+  void FRAM_write(uint32_t address, uint8_t *data, uint32_t length)
+  {
+    /* Set Write-Enable Latch (Single byte command) */
+    spiSend(&FRAM_SPID, 1, (void *)FRAM_OPCODE_WREN);
 
-  /* Program sector */
-  FLASH->CR |= FLASH_CR_PSIZE_1; // x32 (32b word)
-  FLASH->CR |= FLASH_CR_PG; // Enable Programming
-  asm volatile("dsb; isb"); // Ensure completion of above writes
+    //SPI_burstwrite32(SPI_FRAM, ((FRAM_OPCODE_WRITE << 24) | (address & 0xFFFFFF)), data, length);
+    spiSend(&FRAM_SPID, length, (void *)data);
+  }
 
-  while ((FLASH->SR & FLASH_SR_BSY) != 0U) { };
+  void FRAM_read(uint32_t address, uint8_t *data, uint32_t length)
+  {
+    SPI_burstread32(SPI_FRAM, ((FRAM_OPCODE_READ << 24) | (address & 0xFFFFFF)), data, length);
+  }
+
   for(uint32_t i = 0; i < sizeof(app_config_t); i++)
   {
     *((uint32_t *)(FLASH_CONFIG_BASE_ADDR) + i) = *(((uint32_t *)(&app_config)) + i);
     asm volatile("dsb; isb"); // Ensure completion of above write
     while ((FLASH->SR & FLASH_SR_BSY) != 0U) { };
   }
-  FLASH->CR &= ~(FLASH_CR_PG); // Clear
 
-  /* Relock Flash */
-  FLASH->CR |= FLASH_CR_LOCK;
-
-  debugWriteStr("Flushing DCache..\r\n");
-  SCB_CleanDCache();
-
-  debugWriteStr("Config write complete\r\n");
-
-  watchdog_reconfigDefault();
 #endif
   palClearLine(LINE_LED3);
 }
@@ -124,9 +119,7 @@ void config_setnetwork(app_config_network_t *new_config_network_ptr)
 
 void config_load(void)
 {
-  SCB_CleanInvalidateDCache_by_Addr((uint32_t *)FLASH_CONFIG_BASE_ADDR, 0x8000);
-
-  memcpy(&app_config, (uint32_t *)FLASH_CONFIG_BASE_ADDR, sizeof(app_config_t));
+  //memcpy(&app_config, (uint32_t *)FLASH_CONFIG_BASE_ADDR, sizeof(app_config_t));
 
   uint32_t calc_crc = config_crc32();
 
