@@ -219,7 +219,7 @@
 #define STM32_ADC_DUAL_MODE                 FALSE
 #define STM32_ADC_SAMPLES_SIZE              16
 #define STM32_ADC_USE_ADC12                 FALSE
-#define STM32_ADC_USE_ADC3                  FALSE
+#define STM32_ADC_USE_ADC3                  TRUE
 #define STM32_ADC_ADC12_DMA_STREAM          STM32_DMA_STREAM_ID_ANY
 #define STM32_ADC_ADC3_BDMA_STREAM          STM32_BDMA_STREAM_ID_ANY
 #define STM32_ADC_ADC12_DMA_PRIORITY        2
@@ -254,7 +254,7 @@
 #define STM32_GPT_USE_TIM1                  FALSE
 #define STM32_GPT_USE_TIM2                  FALSE
 #define STM32_GPT_USE_TIM3                  FALSE
-#define STM32_GPT_USE_TIM4                  FALSE
+#define STM32_GPT_USE_TIM4                  TRUE
 #define STM32_GPT_USE_TIM5                  FALSE
 #define STM32_GPT_USE_TIM6                  FALSE
 #define STM32_GPT_USE_TIM7                  FALSE
