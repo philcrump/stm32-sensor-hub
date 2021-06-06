@@ -132,6 +132,7 @@ CSRC = $(ALLCSRC) \
        config.c \
        web/web.c \
        web/web_paths.c \
+       http_client.c \
        shell/shell.c \
        shell/usbcfg.c \
        shell/shell_cmd_netconfig.c \
