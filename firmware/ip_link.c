@@ -2,9 +2,11 @@
 
 #include "lwip/dhcp.h"
 
+uint32_t app_ip_link_status;
+
 static struct netif* _ip_netif_ptr = NULL;
 
-uint32_t app_ip_link_status(void)
+uint32_t app_ip_link_status_update(void)
 {
   if(_ip_netif_ptr == NULL)
   {
@@ -14,22 +16,32 @@ uint32_t app_ip_link_status(void)
   {
     if(netif_dhcp_data(_ip_netif_ptr) == NULL)
     {
-      return APP_IP_LINK_STATUS_BOUND;
+      app_ip_link_status = APP_IP_LINK_STATUS_BOUND;
     }
     else
     {
       if(netif_dhcp_data(_ip_netif_ptr)->state == 10) // DHCP_STATE_BOUND = 10
       {
-        return APP_IP_LINK_STATUS_BOUND;
+        app_ip_link_status = APP_IP_LINK_STATUS_BOUND;
       }
       else
       {
-        return APP_IP_LINK_STATUS_UPBUTNOIP;
+        app_ip_link_status = APP_IP_LINK_STATUS_UPBUTNOIP;
       }
     }
   }
   else
   {
-    return APP_IP_LINK_STATUS_DOWN;
+    app_ip_link_status = APP_IP_LINK_STATUS_DOWN;
   }
+  return app_ip_link_status;
+}
+
+void app_ip_link_netif_get(struct netif** netif_ptr_ptr)
+{
+  if(_ip_netif_ptr == NULL)
+  {
+    _ip_netif_ptr = netif_find("ms0");
+  }
+  *netif_ptr_ptr = _ip_netif_ptr;
 }

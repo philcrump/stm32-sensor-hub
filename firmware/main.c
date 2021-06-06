@@ -14,29 +14,32 @@ static THD_WORKING_AREA(blinker_wa, 128);
 static THD_FUNCTION(blinker_thread, arg)
 {
   (void)arg;
-  chRegSetThreadName("green/blue blinker");
-  uint32_t ip_status;
+  chRegSetThreadName("led blinker");
   bool heartbeat_flip = false;
   while (true)
   {
-    ip_status = app_ip_link_status();
-    if(ip_status == APP_IP_LINK_STATUS_DOWN)
-    {
-      palClearLine(LINE_LED_YELLOW);
-    }
-    else if(ip_status == APP_IP_LINK_STATUS_UPBUTNOIP)
-    {
-      palToggleLine(LINE_LED_YELLOW);
-    }
-    else if(ip_status == APP_IP_LINK_STATUS_BOUND)
-    {
-      palSetLine(LINE_LED_YELLOW);
-    }
+    /* Green LED is heartbeat */
     if((heartbeat_flip = !heartbeat_flip))
     {
       palToggleLine(LINE_LED_GREEN);
     }
-    chThdSleepMilliseconds(120);
+
+    /* Yellow LED shows IP Link Status */
+    app_ip_link_status_update();
+    if(app_ip_link_status == APP_IP_LINK_STATUS_DOWN)
+    {
+      palClearLine(LINE_LED_YELLOW);
+    }
+    else if(app_ip_link_status == APP_IP_LINK_STATUS_UPBUTNOIP)
+    {
+      palToggleLine(LINE_LED_YELLOW);
+    }
+    else if(app_ip_link_status == APP_IP_LINK_STATUS_BOUND)
+    {
+      palSetLine(LINE_LED_YELLOW);
+    }
+
+    chThdSleepMilliseconds(100);
   }
 }
 

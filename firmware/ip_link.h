@@ -5,6 +5,12 @@
 #define APP_IP_LINK_STATUS_UPBUTNOIP    1
 #define APP_IP_LINK_STATUS_BOUND        2
 
-uint32_t app_ip_link_status(void);
+extern uint32_t app_ip_link_status;
+
+uint32_t app_ip_link_status_update(void);
+
+#include "lwip/netif.h"
+
+void app_ip_link_netif_get(struct netif** netif_ptr_ptr);
 
 #endif /* __IP_LINK_H__ */

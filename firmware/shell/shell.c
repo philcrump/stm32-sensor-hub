@@ -358,7 +358,11 @@ static void write_header(ShellConfig *scfg)
 
   chprintf(chp, "***** Sensor Hub - Phil Crump 2020 *****" SHELL_NEWLINE_STR);
   chprintf(chp, "* Version: " GITVERSION SHELL_NEWLINE_STR);
-  chprintf(chp, "* Network: Link UP, Addressing: Static" SHELL_NEWLINE_STR);
+
+  chprintf(chp, "* Network: Link %s, Addressing: %s" SHELL_NEWLINE_STR,
+    app_ip_link_status == APP_IP_LINK_STATUS_BOUND ? "UP" : "DOWN",
+    "???"
+  );
 
   if(app_config.network.address_mode == NETWORK_ADDRESS_STATIC)
   {
