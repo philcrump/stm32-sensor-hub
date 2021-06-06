@@ -1806,49 +1806,49 @@
  * CHECKSUM_GEN_IP==1: Generate checksums in software for outgoing IP packets.
  */
 #ifndef CHECKSUM_GEN_IP
-#define CHECKSUM_GEN_IP                 1
+#define CHECKSUM_GEN_IP                 0
 #endif
  
 /**
  * CHECKSUM_GEN_UDP==1: Generate checksums in software for outgoing UDP packets.
  */
 #ifndef CHECKSUM_GEN_UDP
-#define CHECKSUM_GEN_UDP                1
+#define CHECKSUM_GEN_UDP                0
 #endif
  
 /**
  * CHECKSUM_GEN_TCP==1: Generate checksums in software for outgoing TCP packets.
  */
 #ifndef CHECKSUM_GEN_TCP
-#define CHECKSUM_GEN_TCP                1
+#define CHECKSUM_GEN_TCP                0
 #endif
 
 /**
  * CHECKSUM_GEN_ICMP==1: Generate checksums in software for outgoing ICMP packets.
  */
 #ifndef CHECKSUM_GEN_ICMP
-#define CHECKSUM_GEN_ICMP               1
+#define CHECKSUM_GEN_ICMP               0
 #endif
  
 /**
  * CHECKSUM_CHECK_IP==1: Check checksums in software for incoming IP packets.
  */
 #ifndef CHECKSUM_CHECK_IP
-#define CHECKSUM_CHECK_IP               1
+#define CHECKSUM_CHECK_IP               0
 #endif
  
 /**
  * CHECKSUM_CHECK_UDP==1: Check checksums in software for incoming UDP packets.
  */
 #ifndef CHECKSUM_CHECK_UDP
-#define CHECKSUM_CHECK_UDP              1
+#define CHECKSUM_CHECK_UDP              0
 #endif
 
 /**
  * CHECKSUM_CHECK_TCP==1: Check checksums in software for incoming TCP packets.
  */
 #ifndef CHECKSUM_CHECK_TCP
-#define CHECKSUM_CHECK_TCP              1
+#define CHECKSUM_CHECK_TCP              0
 #endif
 
 /**
