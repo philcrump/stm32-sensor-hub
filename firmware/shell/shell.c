@@ -364,7 +364,7 @@ static void write_header(ShellConfig *scfg)
     "???"
   );
 
-  if(app_config.network.address_mode == NETWORK_ADDRESS_STATIC)
+  if(app_config.network.address_mode == NET_ADDRESS_STATIC)
   {
     chprintf(chp, "    Address: ");
       chprintf_ip4_addr(chp, app_config.network.address);

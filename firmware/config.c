@@ -3,7 +3,6 @@
 #include <string.h>
 
 #include "chprintf.h"
-#include "lwipthread.h"
 
 extern void watchdog_reconfigSlow(void);
 extern void watchdog_reconfigDefault(void);
@@ -100,7 +99,7 @@ void config_setdefaults(void)
   app_config.network.netmask = IP4_ADDR_VALUE(255,255,255,0);
   app_config.network.gateway = IP4_ADDR_VALUE(192,168,0,1);
   //app_config.network.address_mode = NETWORK_ADDRESS_STATIC;
-  app_config.network.address_mode = NETWORK_ADDRESS_DHCP;
+  app_config.network.address_mode = NET_ADDRESS_DHCP;
   strncpy(app_config.network.hostname, "sensor-hub-h7", 63);
 
   config_write();

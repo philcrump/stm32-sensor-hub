@@ -1,11 +1,6 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
-typedef enum {
-    NETWORK_ADDRESS_DHCP = 1,
-    NETWORK_ADDRESS_STATIC = 2
-} network_address_mode_t;
-
 typedef struct {
   uint32_t        address;
   uint32_t        netmask;
@@ -13,7 +8,7 @@ typedef struct {
   /**
    * @brief   Startup network addressing mode - static, DHCP, auto.
    */
-  network_address_mode_t address_mode; // static, DHCP, auto.
+  net_addr_mode_t address_mode; // static, DHCP, auto.
   char hostname[64];
 } app_config_network_t;
 

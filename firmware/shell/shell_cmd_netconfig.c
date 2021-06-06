@@ -4,8 +4,6 @@
 
 #include "shell.h"
 #include "chprintf.h"
-#include "lwipthread.h"
-#include "lwip/ip4_addr.h"
 
 static bool config_param_ready;
 static app_config_network_t config_network_new;
@@ -34,18 +32,18 @@ void shell_cmd_netconfig(BaseSequentialStream *chp, int argc, char *argv[])
     }
     else if(strcmp("dhcp", line) == 0)
     {
-      config_network_new.address_mode = NETWORK_ADDRESS_DHCP;
+      config_network_new.address_mode = NET_ADDRESS_DHCP;
       config_param_ready = true;
     }
     else if(strcmp("static", line) == 0)
     {
-      config_network_new.address_mode = NETWORK_ADDRESS_STATIC;
+      config_network_new.address_mode = NET_ADDRESS_STATIC;
       config_param_ready = true;
     }
   }
   
 
-  if(config_network_new.address_mode == NETWORK_ADDRESS_DHCP)
+  if(config_network_new.address_mode == NET_ADDRESS_DHCP)
   {
     config_param_ready = false;
     while(!config_param_ready)
@@ -100,7 +98,7 @@ void shell_cmd_netconfig(BaseSequentialStream *chp, int argc, char *argv[])
       config_param_ready = true;
     }
   }
-  else if(app_config.network.address_mode == NETWORK_ADDRESS_STATIC)
+  else if(app_config.network.address_mode == NET_ADDRESS_STATIC)
   {
     /* IP address */
     config_param_ready = false;
