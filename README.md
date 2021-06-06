@@ -1,10 +1,12 @@
 # Sensor Hub
 
-This project exposes the status of connected sensors on a HTTP Webpage & API, using the ChibiOS (20.3.x) and lwIP (2.1.x) software stacks.
+This project exposes the status of connected sensors on a HTTP Webpage & API, using the ChibiOS (master) and lwIP (2.1.x) software stacks.
+
+_NB: A small patch is currently required to fix the MACv2 ChibiOS driver for this project, until this is merged into upstream you can download the patch [here](https://forum.chibios.org/viewtopic.php?f=35&t=5857&sid=52393ce2639b55b547337dc42bfae12a)._
 
 The hardware components are:
 
-* ST STM32F767ZI ARM Cortex-M7 Development Board - [Product Link](https://www.st.com/en/evaluation-tools/nucleo-f767zi.html)
+* ST STM32H753ZI ARM Cortex-M7F Development Board - [Product Link](https://www.st.com/en/evaluation-tools/nucleo-h753zi.html)
 
 <p float="center">
   <img src="/images/web-screenshot.png" width="49%" />
@@ -35,9 +37,7 @@ Bootup output can be observed on the USB ACM (Virtual COM Port) shell on the ST-
 
 A USB ACM (Virtual COM Port) shell is provided on the "User USB" micro-USB port for managing the configuration. This can be accessed with `screen /dev/ttyACMx` or PuTTY on windows. The configured baudrate doesn't matter here.
 
-The configuration is stored in the 2nd page of the Flash. This is not a good method as the write is slow, the integrity is hampered by the aggressive caching on the M7, and st-flash doesn't support sparse writes so the config is wiped on each firmware update. An external EEPROM or FRAM for configuration storage would be a valuable replacement. (eg. FM25CL64B 8KB)
-
-Once we have external storage so the development process is easier, this configuration should also store channel names and types.
+The configuration routines that save to flash are not suitable for the STM32H7 with it's aggressive caching and so have been disabled. These will be implemented once I get my hands on a SPI FRAM chip to use for the configuration storage.
 
 ## Hardware
 
