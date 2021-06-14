@@ -2,8 +2,6 @@
 
 This project exposes the status of connected sensors on a HTTP Webpage & API, using the ChibiOS (master) and lwIP (2.1.x) software stacks.
 
-_NB: A small patch is currently required to fix the MACv2 ChibiOS driver for this project, until this is merged into upstream you can download the patch [here](https://forum.chibios.org/viewtopic.php?f=35&t=5857&sid=52393ce2639b55b547337dc42bfae12a)._
-
 The hardware components are:
 
 * ST STM32H753ZI ARM Cortex-M7F Development Board - [Product Link](https://www.st.com/en/evaluation-tools/nucleo-h753zi.html)
