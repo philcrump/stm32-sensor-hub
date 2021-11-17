@@ -1,9 +1,7 @@
 'use strict';
 
-const root = document.body;
-
-const doc_contacts_ui = document.getElementById("contacts-ui");
-const doc_environmentals_ui = document.getElementById("environmentals-ui");
+var doc_contacts_ui;
+var doc_environmentals_ui;
 
 var updated = 0;
 
@@ -34,8 +32,6 @@ var contacts_ui = {
   }
 }
 
-m.mount(doc_contacts_ui, contacts_ui);
-
 var environmentals_ui = {
   view: function()
   {
@@ -61,8 +57,6 @@ var environmentals_ui = {
   }
 }
 
-m.mount(doc_environmentals_ui, environmentals_ui);
-
 function status_update()
 {
   m.request({
@@ -78,5 +72,14 @@ function status_update()
   m.redraw();
 }
 
-status_update();
-setInterval(status_update, 1000);
+window.onload = function()
+{
+  doc_contacts_ui = document.getElementById("contacts-ui");
+  doc_environmentals_ui = document.getElementById("environmentals-ui");
+
+  m.mount(doc_contacts_ui, contacts_ui);
+  m.mount(doc_environmentals_ui, environmentals_ui);
+
+  status_update();
+  setInterval(status_update, 1000);
+}

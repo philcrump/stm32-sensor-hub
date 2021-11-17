@@ -47,11 +47,11 @@ static bool decode_url(const char *url, char *buf, size_t max)
     case '.':
       if (max <= 1)
         return false;
-
+#if 0
       h = *(url + 1);
       if (h == '.')
         return false;
-
+#endif
       break;
     case '%':
       if (max <= 1)
