@@ -40,6 +40,8 @@
 #define PBUF_POOL_SIZE                  32
 #define MEMP_NUM_PBUF                   32
 
+#define MEMP_NUM_NETCONN                32
+
 /* Fixed settings mandated by the ChibiOS integration.*/
 #include "static_lwipopts.h"
 
