@@ -36,7 +36,6 @@
 #define LWIP_NETIF_HOSTNAME             1
 #define LWIP_LINK_POLL_INTERVAL         TIME_MS2I(500)
 
-/* PBUF_POOL_SIZE: the number of buffers in the pbuf pool. */
 #define PBUF_POOL_SIZE                  32
 #define MEMP_NUM_PBUF                   32
 
@@ -44,14 +43,6 @@
 
 /* Fixed settings mandated by the ChibiOS integration.*/
 #include "static_lwipopts.h"
-
-/* Optional, application-specific settings.*/
-#if !defined(TCPIP_MBOX_SIZE)
-#define TCPIP_MBOX_SIZE                 MEMP_NUM_PBUF
-#endif
-#if !defined(TCPIP_THREAD_STACKSIZE)
-#define TCPIP_THREAD_STACKSIZE          1024
-#endif
 
 /* Use ChibiOS specific priorities. */
 #if !defined(TCPIP_THREAD_PRIO)
