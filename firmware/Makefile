@@ -125,7 +125,7 @@ CSRC = $(ALLCSRC) \
        $(BOARDSRC) \
        $(CHIBIOS)/os/various/evtimer.c \
        watchdog.c \
-       random.c \
+       hwrandom.c \
        ip_link.c \
        contacts.c \
        environmentals.c \

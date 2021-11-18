@@ -133,7 +133,7 @@ THD_FUNCTION(environmentals_service_thread, arg)
 
       //hub_environmentals.environmental[i].temperature = Temperature_readCPU();
 
-      hub_environmentals.environmental[i].humidity = 60.0 + (random(200)/10.0);
+      hub_environmentals.environmental[i].humidity = 60.0 + (hwrandom(200)/10.0);
     }
 
     chThdSleepMilliseconds(100);
