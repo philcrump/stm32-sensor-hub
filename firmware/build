@@ -22,6 +22,8 @@ opt_werror=false
 opt_sound=false
 opt_mthread=false
 
+project_name='sensorhub'
+
 hyphenjoin() {
   str=""
   while [ $# -gt 0 ]
@@ -138,10 +140,10 @@ done
 for i in `seq 2 $OPTIND`; do shift; done
 
 githash_var=`githash`
-filename="$(hyphenjoin "stm32-sensorhub" "${githash_var}")"
+filename="$(hyphenjoin "${project_name}" "${githash_var}")"
 mkdir -p "builds/"
 
-flags="TARGET_FILENAME=\"${filename}\" GITVERSION=\"${githash_var}\" GITVERSION_X32=\"`githash_x32`\""
+flags="TARGET_FILENAME=\"${filename}\" PROJNAME=\"${project_name}\" GITVERSION=\"${githash_var}\" GITVERSION_X32=\"`githash_x32`\""
 printf "$_INFO_ Using ARM-GCC version: `gccversion`\n";
 printf "$_INFO_ Firmware version: ${githash_var}\n";
 

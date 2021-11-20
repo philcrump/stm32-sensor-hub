@@ -168,7 +168,7 @@ CPPWARN = -Wall -Wextra -Wundef
 #
 
 # List all user C define here, like -D_DEBUG=1
-UDEFS = -DGITVERSION="\"$(GITVERSION)\"" -DGITVERSION_X32="$(GITVERSION_X32)"
+UDEFS = -DPROJNAME="\"$(PROJNAME)\"" -DGITVERSION="\"$(GITVERSION)\"" -DGITVERSION_X32="$(GITVERSION_X32)"
 
 # Define ASM defines here
 UADEFS =
