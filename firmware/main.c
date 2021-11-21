@@ -8,7 +8,9 @@
 static THD_WORKING_AREA(watchdog_service_wa, 128);
 static THD_WORKING_AREA(contacts_service_wa, 128);
 static THD_WORKING_AREA(environmentals_service_wa, 128);
+static THD_WORKING_AREA(scd30_service_wa, 128);
 static THD_WORKING_AREA(usbshell_service_wa, 128);
+static THD_WORKING_AREA(mcu_service_wa, 128);
 
 static THD_WORKING_AREA(blinker_wa, 128);
 static THD_FUNCTION(blinker_thread, arg)
@@ -95,6 +97,8 @@ int main(void)
   debugWriteStr("Initialising device interface threads..\r\n");
   chThdCreateStatic(contacts_service_wa, sizeof(contacts_service_wa), NORMALPRIO, contacts_service_thread, NULL);
   chThdCreateStatic(environmentals_service_wa, sizeof(environmentals_service_wa), NORMALPRIO, environmentals_service_thread, NULL);
+  chThdCreateStatic(scd30_service_wa, sizeof(scd30_service_wa), NORMALPRIO, scd30_service_thread, NULL);
+  chThdCreateStatic(mcu_service_wa, sizeof(mcu_service_wa), NORMALPRIO, mcu_service_thread, NULL);
 
   debugWriteStr("Initialising USB configuration shell..\r\n");
   chThdCreateStatic(usbshell_service_wa, sizeof(usbshell_service_wa), NORMALPRIO, usbshell_service_thread, NULL);

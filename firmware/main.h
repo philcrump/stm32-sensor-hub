@@ -41,6 +41,8 @@
 #include "ip_link.h"
 #include "contacts.h"
 #include "environmentals.h"
+#include "scd30.h"
+#include "mcu.h"
 #include "config.h"
 #include "web/web.h"
 #include "shell/shell.h"

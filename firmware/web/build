@@ -66,7 +66,7 @@ do
 	pushd $file_path > /dev/null
 	  xxd -i $file_basename > "${file_headername}"
 	  rm $file_basename
-	  sed -i 's/^unsigned char/const unsigned char/' "${file_headername}"
+	  sed -i 's/^unsigned char/CC_ALIGN_DATA(32) const unsigned char/' "${file_headername}"
 	  sed -i 's/^unsigned int/const unsigned int/' "${file_headername}"
 	popd > /dev/null
 	printf_v " - ${file_basename}\n"

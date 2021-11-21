@@ -487,8 +487,8 @@
                                      PIN_MODE_INPUT(GPIOB_PIN5) |           \
                                      PIN_MODE_INPUT(GPIOB_PIN6) |           \
                                      PIN_MODE_OUTPUT(GPIOB_LED2) |          \
-                                     PIN_MODE_INPUT(GPIOB_PIN8) |           \
-                                     PIN_MODE_INPUT(GPIOB_PIN9) |           \
+                                     PIN_MODE_ALTERNATE(GPIOB_PIN8) |           \
+                                     PIN_MODE_ALTERNATE(GPIOB_PIN9) |           \
                                      PIN_MODE_INPUT(GPIOB_PIN10) |          \
                                      PIN_MODE_INPUT(GPIOB_PIN11) |          \
                                      PIN_MODE_INPUT(GPIOB_PIN12) |          \
@@ -503,8 +503,8 @@
                                      PIN_OTYPE_PUSHPULL(GPIOB_PIN5) |       \
                                      PIN_OTYPE_PUSHPULL(GPIOB_PIN6) |       \
                                      PIN_OTYPE_PUSHPULL(GPIOB_LED2) |       \
-                                     PIN_OTYPE_PUSHPULL(GPIOB_PIN8) |       \
-                                     PIN_OTYPE_PUSHPULL(GPIOB_PIN9) |       \
+                                     PIN_OTYPE_OPENDRAIN(GPIOB_PIN8) |       \
+                                     PIN_OTYPE_OPENDRAIN(GPIOB_PIN9) |       \
                                      PIN_OTYPE_PUSHPULL(GPIOB_PIN10) |      \
                                      PIN_OTYPE_PUSHPULL(GPIOB_PIN11) |      \
                                      PIN_OTYPE_PUSHPULL(GPIOB_PIN12) |      \
@@ -519,8 +519,8 @@
                                      PIN_OSPEED_VERYLOW(GPIOB_PIN5) |       \
                                      PIN_OSPEED_VERYLOW(GPIOB_PIN6) |       \
                                      PIN_OSPEED_HIGH(GPIOB_LED2) |          \
-                                     PIN_OSPEED_VERYLOW(GPIOB_PIN8) |       \
-                                     PIN_OSPEED_VERYLOW(GPIOB_PIN9) |       \
+                                     PIN_OSPEED_MEDIUM(GPIOB_PIN8) |       \
+                                     PIN_OSPEED_MEDIUM(GPIOB_PIN9) |       \
                                      PIN_OSPEED_VERYLOW(GPIOB_PIN10) |      \
                                      PIN_OSPEED_VERYLOW(GPIOB_PIN11) |      \
                                      PIN_OSPEED_VERYLOW(GPIOB_PIN12) |      \
@@ -567,8 +567,8 @@
                                      PIN_AFIO_AF(GPIOB_PIN5, 0U) |          \
                                      PIN_AFIO_AF(GPIOB_PIN6, 0U) |          \
                                      PIN_AFIO_AF(GPIOB_LED2, 0U))
-#define VAL_GPIOB_AFRH              (PIN_AFIO_AF(GPIOB_PIN8, 0U) |          \
-                                     PIN_AFIO_AF(GPIOB_PIN9, 0U) |          \
+#define VAL_GPIOB_AFRH              (PIN_AFIO_AF(GPIOB_PIN8, 4U) |          \
+                                     PIN_AFIO_AF(GPIOB_PIN9, 4U) |          \
                                      PIN_AFIO_AF(GPIOB_PIN10, 0U) |         \
                                      PIN_AFIO_AF(GPIOB_PIN11, 0U) |         \
                                      PIN_AFIO_AF(GPIOB_PIN12, 0U) |         \

@@ -129,6 +129,8 @@ CSRC = $(ALLCSRC) \
        ip_link.c \
        contacts.c \
        environmentals.c \
+       scd30.c \
+       mcu.c \
        config.c \
        web/web.c \
        web/web_paths.c \
