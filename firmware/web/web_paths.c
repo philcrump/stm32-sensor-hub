@@ -6,7 +6,7 @@
 #include <string.h>
 #include "chprintf.h"
 
-#define HTTP_RESPONSE_MAXLENGTH   16384
+#define HTTP_RESPONSE_MAXLENGTH   32768
 CC_ALIGN_DATA(32) static char http_response[HTTP_RESPONSE_MAXLENGTH];
 
 static const char http_robots_txt_hdr[] = "HTTP/1.0 200 OK\r\nContent-Type: text/plain\r\n\r\n";
